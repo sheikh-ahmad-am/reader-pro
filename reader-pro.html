@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reader Pro — Reel Counting System</title>
+<meta name="description" content="Reader Pro counts your Instagram Reels, YouTube Shorts and Facebook Reels from your own Google Sheets. Views, Likes, Comments, Shares — exact numbers, no hand typing.">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#f4f9ff; --dim:#9db4c4; --faint:#647b8c; --line:rgba(255,255,255,.08); }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:#020308; color:var(--ink); font-family:'Poppins',Arial,sans-serif; overflow-x:hidden;}
+  /* ------- hero stage ------- */
+  .stage{position:relative; text-align:center; padding:0 20px 30px; overflow:hidden;}
+  .vortex{position:absolute; left:50%; top:-215px; width:min(1180px,165vw); transform:translateX(-50%);
+    pointer-events:none; animation:drift 16s ease-in-out infinite alternate;
+    -webkit-mask-image:radial-gradient(ellipse 72% 68% at 50% 42%, #000 55%, transparent 98%);
+            mask-image:radial-gradient(ellipse 72% 68% at 50% 42%, #000 55%, transparent 98%);}
+  @keyframes drift{from{transform:translateX(-50%) scale(1)} to{transform:translateX(-50%) scale(1.045)}}
+  @media (prefers-reduced-motion: reduce){ .vortex{animation:none} html{scroll-behavior:auto} }
+  /* ------- nav ------- */
+  nav{position:relative; z-index:3; max-width:1120px; margin:0 auto; padding:20px 6px 0;
+    display:flex; align-items:center; gap:10px;}
+  nav img{width:32px; height:32px; border-radius:50%;}
+  .brand{font-weight:700; font-size:16.5px; letter-spacing:.02em;}
+  .links{margin:0 auto; display:flex; gap:30px;}
+  .links a{color:var(--dim); text-decoration:none; font-size:13.5px;}
+  .links a:hover{color:var(--ink);}
+  .nav-btn{color:var(--ink); text-decoration:none; font-size:13px; font-weight:500;
+    border:1px solid rgba(255,255,255,.22); padding:8px 18px; border-radius:999px; background:rgba(255,255,255,.04);}
+  .nav-btn:hover{background:rgba(255,255,255,.12);}
+  @media (max-width:640px){ .links{display:none} .nav-btn{margin-left:auto} }
+  /* ------- hero copy ------- */
+  .hero{position:relative; z-index:2; padding-top:308px;}
+  @media (max-width:640px){ .hero{padding-top:196px} .vortex{top:-120px} }
+  .badge{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--dim);
+    border:1px solid var(--line); background:rgba(10,16,30,.55); padding:7px 16px; border-radius:999px; backdrop-filter:blur(6px);}
+  .badge .dot{width:7px; height:7px; border-radius:50%; background:#4fd8e8; box-shadow:0 0 10px #4fd8e8;}
+  h1{font-size:clamp(40px,7.4vw,68px); font-weight:700; line-height:1.13; letter-spacing:-.01em; margin-top:26px;}
+  h1 .dim{color:#5f7488;}
+  .sub{color:var(--dim); font-size:15.5px; line-height:1.75; max-width:560px; margin:22px auto 0;}
+  .cta{display:inline-block; margin-top:32px; background:#fff; color:#060b14; font-weight:600; font-size:16px;
+    text-decoration:none; padding:15px 40px; border-radius:999px; box-shadow:0 0 34px rgba(140,210,255,.35);
+    transition:transform .15s ease, box-shadow .15s ease;}
+  .cta:hover{transform:translateY(-2px); box-shadow:0 0 48px rgba(140,210,255,.5);}
+  .meta{color:var(--faint); font-size:12.5px; margin-top:16px; letter-spacing:.04em;}
+  /* ------- sections ------- */
+  .wrap{max-width:700px; margin:0 auto; padding:0 20px;}
+  section{padding:74px 0 6px; text-align:center;}
+  section h2{font-size:27px; font-weight:600;}
+  section h2 .dim{color:#5f7488;}
+  .rule{width:44px; height:1px; background:rgba(255,255,255,.25); margin:20px auto 0;}
+  .rooms{margin-top:34px; text-align:left;}
+  .room{padding:20px 4px; border-top:1px solid var(--line);}
+  .room:last-child{border-bottom:1px solid var(--line);}
+  .room b{font-size:16px; font-weight:600;}
+  .room span{display:block; color:var(--dim); font-size:14px; line-height:1.7; margin-top:4px;}
+  .steps{margin-top:34px; text-align:left;}
+  .step{display:flex; gap:18px; padding:16px 4px; border-top:1px solid var(--line);}
+  .step:last-child{border-bottom:1px solid var(--line);}
+  .step .n{color:#4fd8e8; font-weight:700; font-size:15px; padding-top:1px;}
+  .step p{color:var(--dim); font-size:14.5px; line-height:1.7;}
+  .step p b{color:var(--ink); font-weight:600;}
+  .note{margin-top:44px; border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+    color:var(--dim); font-size:13.5px; line-height:1.75; background:rgba(255,255,255,.02); text-align:left;}
+  .faq{margin-top:30px; text-align:left;}
+  .qa{padding:16px 4px; border-top:1px solid var(--line);}
+  .qa:last-child{border-bottom:1px solid var(--line);}
+  .qa b{font-size:14.5px; font-weight:600;}
+  .qa p{color:var(--dim); font-size:14px; line-height:1.7; margin-top:4px;}
+  /* ------- close ------- */
+  .close{text-align:center; padding:84px 20px 8px;}
+  .close .big{font-size:25px; font-weight:600;}
+  .close p{color:var(--dim); font-size:14px; margin-top:10px;}
+  .wa{display:inline-block; margin-top:18px; color:#4fd8e8; text-decoration:none; font-size:14.5px; font-weight:500;}
+  footer{text-align:center; color:var(--faint); font-size:12.5px; line-height:1.8; padding:56px 20px 34px;}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <img class="vortex" src="https://sheikh-ahmad-am.github.io/portfolio/vortex.png" alt="">
+  <nav>
+    <img src="https://sheikh-ahmad-am.github.io/portfolio/readerpro-logo.png" alt="Reader Pro logo">
+    <div class="brand">Reader Pro</div>
+    <div class="links">
+      <a href="#rooms">Rooms</a>
+      <a href="#how">How it works</a>
+      <a href="#questions">Questions</a>
+    </div>
+    <a class="nav-btn" href="https://github.com/sheikh-ahmad-am/reader-pro/releases/latest/download/ReaderPro.apk">Get the app</a>
+  </nav>
+
+  <div class="hero">
+    <div class="badge"><span class="dot"></span> 7-day free trial — no card needed</div>
+    <h1>Reels counted<br><span class="dim">while you sleep.</span></h1>
+    <p class="sub">Reader Pro opens your reels in Instagram, YouTube and Facebook, reads the exact views, likes, comments and shares off the screen, and writes them back into your sheet. The real numbers, with commas — never a guess.</p>
+    <a class="cta" href="https://github.com/sheikh-ahmad-am/reader-pro/releases/latest/download/ReaderPro.apk">Download for Android</a>
+    <div class="meta">VERSION 1.6.4 &nbsp;·&nbsp; 1.3 MB &nbsp;·&nbsp; ANDROID</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="rooms">
+    <h2>Three rooms. <span class="dim">One app.</span></h2>
+    <div class="rule"></div>
+    <div class="rooms">
+      <div class="room"><b>Reel Reader — Instagram</b><span>Exact views and likes from the counts panel, comments and shares from the rail, and the author's followers when you switch them on. A hidden number stays blank.</span></div>
+      <div class="room"><b>YT Reader — YouTube Shorts</b><span>Views the way only the description panel tells them, likes and comments from the rail, and channel subscribers when you want them.</span></div>
+      <div class="room"><b>FB Reader — Facebook Reels</b><span>The exact view count from the panel behind the long-press, with likes, comments, shares and author followers collected for you.</span></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>Three steps. <span class="dim">Then put the phone down.</span></h2>
+    <div class="rule"></div>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><p><b>Install and sign in.</b> Open the app, type your email, and a code arrives in your inbox. Type the code — you are in, and your trial starts.</p></div>
+      <div class="step"><div class="n">02</div><p><b>One switch.</b> Turn on the app's Accessibility switch once (Settings → Installed apps → Reader Pro) so it can read reels for you.</p></div>
+      <div class="step"><div class="n">03</div><p><b>Paste your sheet and press start.</b> Give it the Google Sheet that holds your links, pick your rows, and it counts — saving a results file in the same order as your sheet.</p></div>
+    </div>
+    <div class="note">One honest thing: Reader Pro is not on the Play Store, because apps that read other apps through Accessibility are not allowed there. That is why you download it from this page — Android will ask you to allow the install, and that is normal for apps installed this way.</div>
+  </section>
+
+  <section id="questions">
+    <h2>Questions, <span class="dim">answered straight.</span></h2>
+    <div class="rule"></div>
+    <div class="faq">
+      <div class="qa"><b>Is the trial really free?</b><p>Yes — 7 full days from the moment you sign in. No card, no payment details asked.</p></div>
+      <div class="qa"><b>What numbers do I get?</b><p>Views, Likes, Comments and Shares for every reel — exact numbers with commas, in the same row order as your sheet, ready to paste back.</p></div>
+      <div class="qa"><b>What do I need before starting?</b><p>An Android phone, Instagram / YouTube / Facebook signed in, and a Google Sheet of reel links shared as “Anyone with the link”.</p></div>
+      <div class="qa"><b>What happens when my time ends?</b><p>The app stops at the gate and tells you. Everything you already counted stays on your phone — it is never taken away.</p></div>
+    </div>
+  </section>
+</div>
+
+<div class="close">
+  <div class="big">Put the phone down.<br>Wake up to counted reels.</div>
+  <p>Questions, or your trial ended and you want more time? I reply myself.</p>
+  <a class="cta" href="https://github.com/sheikh-ahmad-am/reader-pro/releases/latest/download/ReaderPro.apk">Download for Android</a>
+  <br><a class="wa" href="https://wa.me/917546863947?text=Hi%2C%20I%20want%20to%20know%20about%20Reader%20Pro">Chat on WhatsApp →</a>
+</div>
+
+<footer>
+  Reader Pro is made by Ahmad Sheikh, a data analyst from Patna, India.<br>
+  This page always carries the latest version.
+</footer>
+
+</body>
+</html>
